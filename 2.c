@@ -1,36 +1,27 @@
-#include <math.h>
 #include <stdio.h>
 
-typedef struct {
-    double x;
-    double y;
-} tocka_t;
+struct vektor_s {
+    int komp_i;
+    int komp_j;
+};
 
-tocka_t *pokNaNajblizuTocku(tocka_t *tocka, int n) {
-    int najbliza = 0;
-    double minUdaljenost = __DBL_MAX__;
-
+void SumaVektora(struct vektor_s *pok, int n, struct vektor_s *rez) {
+    (*rez).komp_i = 0;
+    (*rez).komp_j = 0;
     for (int i = 0; i < n; i++) {
-        double udaljenost =
-            sqrt(pow((*(tocka + i)).x, 2) + pow((*(tocka + i)).y, 2));
-
-        if (udaljenost <= minUdaljenost) {
-            if (udaljenost != 0) {
-                minUdaljenost = udaljenost;
-                najbliza = i;
-            }
-        }
-
-        // printf("%lf\n", udaljenost);
+        (*rez).komp_i += (*(pok + i)).komp_i;
+        (*rez).komp_j += (*(pok + i)).komp_j;
     }
-    return (tocka + najbliza);
 }
 
 int main(void) {
-    tocka_t tocke[10] = {
-        {2.e+121, 2.e+121}, {1.e+121, 1.e+121}, {4.e+121, 4.e+121}};
+    struct vektor_s rez = {0, 0};
+    struct vektor_s vektori[7] = {{1, -3}, {-2, 8}, {4, 5}, {3, -14},
+                                  {2, 2},  {6, -6}, {1, -1}};
 
-    tocka_t *pok = pokNaNajblizuTocku(tocke, 5);
+    SumaVektora(vektori, 7, &rez);
 
-    printf("%lf %lf", (*pok).x, (*pok).y);
+    printf("%d %d", rez.komp_i, rez.komp_j);
+
+    return 0;
 }

@@ -1,31 +1,37 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 
-void generirajLozinku(unsigned int sjeme, const char *znakoviZaLozinku,
-                      int duljLoz, char *lozinka) {
-    srand(sjeme);
-    int duljNiza = strlen(znakoviZaLozinku);
-    int duljina = 0;
-    while (duljina < duljLoz) {
-        char c = rand() % duljNiza;
-        lozinka[duljina] = znakoviZaLozinku[c];
-        duljina++;
+void igra(int seed, int brojBacanja, int *pobjednik, int *razlika) {
+    srand(seed);
+
+    int sumaPrvi = 0;
+    int sumaDrugi = 0;
+    for (int i = 0; i < brojBacanja; i++) {
+        int prvi = rand() % 6 + 1;
+        int drugi = rand() % 6 + 1;
+
+        sumaPrvi += prvi;
+        sumaDrugi += drugi;
     }
-    //lozinka[duljina] = '\0'; 
+
+    if (sumaPrvi > sumaDrugi) {
+        *pobjednik = 1;
+        *razlika = sumaPrvi - sumaDrugi;
+    } else if (sumaDrugi > sumaPrvi) {
+        *pobjednik = 2;
+        *razlika = sumaDrugi - sumaPrvi;
+    } else {
+        *pobjednik = 0;
+        *razlika = 0;
+    }
 }
 
 int main(void) {
-    char lozinka[10];
 
-    char niz[100] = "123456789qwertzuiopasdfghjklyxcvbnmQWERTZUIOPASDFGHJKLYXCVBNM#$&()";
+    int pobjednik, razlika;
+    igra(123, 3, &pobjednik, &razlika);
 
-    generirajLozinku(
-        500,
-        niz,
-        10, lozinka);
-
-    printf("%s", lozinka);
+    printf("%d %d", pobjednik, razlika);
 
     return 0;
 }

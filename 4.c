@@ -2,37 +2,34 @@
 
 struct record {
     int code;
-    int salary;
-    char name[40 + 1];
+    int x;
+    int y;
 };
 
 struct record zapis;
-struct record najgori;
 
-void increaseLowest(char *fileName, int percentage) {
-    int indexNajmanji = 0;
-    int najmanjaPlaca = 100000000;
+_Bool txt2bin(char *inputFile, char *outputFile) {
+    FILE *txt = fopen(inputFile, "r");
+    FILE *bin = fopen(outputFile, "wb");
 
-    FILE *bin = fopen(fileName, "r+b");
-    int i = 0;
-    while (fread(&zapis, sizeof(zapis), 1, bin)) {
-        if (zapis.salary < najmanjaPlaca) {
-            najmanjaPlaca = zapis.salary;
-            indexNajmanji = i;
-            najgori = zapis;
-        }
-        i++;
+    if(txt == NULL || bin == NULL) return 0;
+
+    while (fscanf(txt, "%2d%3d%3d", &zapis.code, &zapis.x, &zapis.y) != EOF) {
+        fseek(bin, (long)(zapis.code-1)*sizeof(zapis), SEEK_SET);
+        fwrite(&zapis, sizeof(zapis), 1, bin);
     }
-    najgori.salary = najgori.salary * (1 + percentage * 1.0f / 100);
-    fseek(bin, sizeof(zapis) * indexNajmanji, SEEK_SET);
-    fwrite(&najgori, sizeof(zapis), 1, bin);
+    fclose(txt);
     fclose(bin);
+
+    return 1;
 }
 
 int main(void) {
-    increaseLowest("salaries.bin", 15);
-    FILE *bin = fopen("salaries.bin", "r+b");
+    _Bool test = txt2bin("input.txt", "out.bin");
+    FILE *bin = fopen("out.bin", "rb");
     while (fread(&zapis, sizeof(zapis), 1, bin)) {
-        printf("%s %d\n", zapis.name, zapis.salary);
+        printf("%d %d %d\n", zapis.code, zapis.x, zapis.y);
     }
+    printf("%d", test);
+    return 0;
 }
